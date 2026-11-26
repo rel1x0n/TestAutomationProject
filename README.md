@@ -52,3 +52,17 @@ npx playwright install chromium && npm run test:e2e   # e2e-тести Playwrigh
 ```
 
 Звіти зберігаються в теці `reports/`.
+
+## Порівняльний експеримент: Selenium vs Cypress vs Playwright
+
+Один і той самий набір із 5 сценаріїв (вхід, помилковий вхід, створення публікації, пошук, вихід)
+реалізовано трьома фреймворками:
+
+| Фреймворк | Файл | Команда |
+|---|---|---|
+| Selenium WebDriver + Mocha | `src/test/js/compare/selenium.compare.test.js` | `npm run compare:selenium` |
+| Playwright Test | `src/test/js/compare/playwright.compare.spec.js` | `npm run compare:playwright` |
+| Cypress | `cypress/e2e/compare.cy.js` | `npm run compare:cypress` (сервер: `PORT=3100 npm start`) |
+
+Workflow `.github/workflows/compare.yml` запускає всі три набори на одному runner GitHub Actions
+по три рази та виводить тривалість кожного запуску.

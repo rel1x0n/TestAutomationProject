@@ -13,7 +13,10 @@
     "test:selenium": "mocha --config .mocharc.selenium.json",
     "test:suite": "mocha --config .mocharc.suite.json",
     "test:e2e": "playwright test",
-    "test:all": "npm test && npm run test:selenium && npm run test:e2e"
+    "test:all": "npm test && npm run test:selenium && npm run test:e2e",
+    "compare:selenium": "mocha --require src/test/utils/mocha-hooks.js --timeout 30000 --reporter spec src/test/js/compare/selenium.compare.test.js",
+    "compare:playwright": "playwright test --config playwright.compare.config.js",
+    "compare:cypress": "cypress run --browser chrome --spec cypress/e2e/compare.cy.js"
   },
   "keywords": [],
   "author": "Рудько Юрій, мКН-24",
@@ -21,6 +24,7 @@
   "devDependencies": {
     "@playwright/test": "1.57",
     "chai": "^4.5.0",
+    "cypress": "^16.4.0",
     "jest": "^29.7.0",
     "jest-html-reporter": "^4.4.3",
     "mocha": "^12.0.3",
