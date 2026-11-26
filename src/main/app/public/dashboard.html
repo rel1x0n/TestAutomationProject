@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head><meta charset="utf-8"><title>MyPress – Dashboard</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<nav><strong>MyPress</strong><span>Користувач: <b id="user"></b> · <a href="#" id="logout">Вийти</a></span></nav>
+<div class="card wide">
+  <h1>Dashboard</h1>
+  <input id="search" type="search" placeholder="Пошук публікацій...">
+  <div id="posts"></div>
+  <h2 style="font-size:17px;margin-top:24px">Нова публікація</h2>
+  <label for="post-title">Заголовок</label><input id="post-title">
+  <label for="post-body">Текст</label><textarea id="post-body" rows="3"></textarea>
+  <button id="add-post">Опублікувати</button>
+  <div class="alert" id="post-error"></div>
+</div>
+<script>
+const token = localStorage.getItem('token');
+if (!token) location.href = '/login.html';
+document.getElementById('user').textContent = localStorage.getItem('user') || '';
+async function load(q = '') {
+  const list = await fetch('/api/posts?q=' + encodeURIComponent(q)).then((r) => r.json());
+  document.getElementById('posts').innerHTML = list.length
+    ? list.map((p) => `<div class="post" data-id="${p.id}"><h3>${p.title}</h3><div>${p.body}</div></div>`).join('')
+    : '<p id="no-results">Нічого не знайдено</p>';
+}
+document.getElementById('search').addEventListener('input', (e) => load(e.target.value));
+document.getElementById('add-post').addEventListener('click', async () => {
+  const body = { title: document.getElementById('post-title').value, body: document.getElementById('post-body').value };
+  const res = await fetch('/api/posts', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
+  const err = document.getElementById('post-error');
+  if (res.status === 201) { err.style.display = 'none'; document.getElementById('post-title').value = ''; document.getElementById('post-body').value = ''; load(); }
+  else { err.textContent = (await res.json()).error; err.style.display = 'block'; }
+});
+document.getElementById('logout').addEventListener('click', (e) => { e.preventDefault(); localStorage.clear(); location.href = '/login.html'; });
+load();
+</script>
+</body>
+</html>

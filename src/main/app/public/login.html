@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head><meta charset="utf-8"><title>MyPress – Вхід</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<div class="card">
+  <h1>Вхід до MyPress</h1>
+  <form id="login-form" novalidate>
+    <label for="username">Логін</label>
+    <input id="username" name="username" type="text" autocomplete="off">
+    <label for="password">Пароль</label>
+    <input id="password" name="password" type="password">
+    <button type="submit">Увійти</button>
+  </form>
+  <div class="alert" id="login-error"></div>
+</div>
+<script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const body = { username: e.target.username.value, password: e.target.password.value };
+  const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const out = await res.json();
+  if (res.ok) { localStorage.setItem('token', out.token); localStorage.setItem('user', out.user); location.href = '/dashboard.html'; }
+  else { const a = document.getElementById('login-error'); a.textContent = out.error; a.style.display = 'block'; }
+});
+</script>
+</body>
+</html>

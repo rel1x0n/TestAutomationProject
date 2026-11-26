@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head><meta charset="utf-8"><title>MyPress – Реєстрація</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<div class="card">
+  <h1>Реєстрація</h1>
+  <form id="register-form" novalidate>
+    <label for="name">Ім'я *</label>
+    <input id="name" name="name" type="text" autocomplete="off">
+    <div class="error" id="name-error"></div>
+    <label for="email">Email *</label>
+    <input id="email" name="email" type="email" autocomplete="off">
+    <div class="error" id="email-error"></div>
+    <label for="password">Пароль * (мінімум 6 символів)</label>
+    <input id="password" name="password" type="password">
+    <div class="error" id="password-error"></div>
+    <button type="submit" id="submit">Відправити</button>
+  </form>
+  <div class="success" id="success">Форма відправлена успішно</div>
+</div>
+<script>
+const form = document.getElementById('register-form');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const data = { name: form.name.value, email: form.email.value, password: form.password.value };
+  ['name', 'email', 'password'].forEach((f) => { document.getElementById(f + '-error').textContent = ''; form[f].classList.remove('invalid'); });
+  document.getElementById('success').style.display = 'none';
+  const res = await fetch('/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+  const out = await res.json();
+  if (res.status === 201) { document.getElementById('success').style.display = 'block'; form.reset(); return; }
+  Object.entries(out.errors || {}).forEach(([f, msg]) => { document.getElementById(f + '-error').textContent = msg; form[f] && form[f].classList.add('invalid'); });
+});
+</script>
+</body>
+</html>
