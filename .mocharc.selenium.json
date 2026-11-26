@@ -1,0 +1,7 @@
+{
+  "require": ["src/test/utils/mocha-hooks.js"],
+  "spec": ["src/test/js/selenium/**/*.test.js"],
+  "timeout": 30000,
+  "reporter": "mochawesome",
+  "reporter-option": ["reportDir=reports/selenium", "reportFilename=selenium-report", "charts=true", "quiet=true"]
+}
