@@ -1,0 +1,7 @@
+{
+  "require": ["src/test/utils/mocha-hooks.js"],
+  "spec": ["src/test/js/suite/ts01_base.test.js", "src/test/js/selenium/smoke.title.test.js"],
+  "timeout": 30000,
+  "reporter": "mochawesome",
+  "reporter-option": ["reportDir=reports/suite", "reportFilename=TS-01-report", "charts=true", "quiet=true"]
+}
