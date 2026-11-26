@@ -56,7 +56,8 @@ jobs:
 
   e2e-playwright:
     name: E2E tests (Playwright)
-    runs-on: ubuntu-latest
+    # Playwright 1.57 офіційно підтримує Ubuntu до 24.04 включно
+    runs-on: ubuntu-24.04
     needs: unit-api
     steps:
       - uses: actions/checkout@v4
