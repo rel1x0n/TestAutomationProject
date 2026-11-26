@@ -7,6 +7,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+env:
+  CYPRESS_INSTALL_BINARY: 0   # бінарний файл Cypress потрібен лише у workflow compare.yml
+
 jobs:
   unit-api:
     name: Unit + API tests (Jest)
