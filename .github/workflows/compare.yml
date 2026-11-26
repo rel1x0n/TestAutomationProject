@@ -51,6 +51,7 @@ jobs:
           done
 
       - name: Playwright (3 runs)
+        if: always()
         run: |
           for i in 1 2 3; do
             s=$(date +%s%N); npm run --silent compare:playwright; e=$(date +%s%N)
@@ -58,6 +59,7 @@ jobs:
           done
 
       - name: Cypress (3 runs)
+        if: always()
         run: |
           for i in 1 2 3; do
             s=$(date +%s%N); npm run --silent compare:cypress; e=$(date +%s%N)
