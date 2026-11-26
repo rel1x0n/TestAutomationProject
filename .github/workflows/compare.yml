@@ -1,0 +1,72 @@
+name: Compare UI frameworks
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "src/test/js/compare/**"
+      - "cypress/**"
+      - "cypress.config.js"
+      - "playwright.compare.config.js"
+      - ".github/workflows/compare.yml"
+  workflow_dispatch:
+
+jobs:
+  compare:
+    name: Selenium vs Cypress vs Playwright
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies (npm + Cypress binary)
+        run: npm ci
+
+      - name: Install Playwright dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Tool versions and disk usage
+        run: |
+          node -v
+          google-chrome --version
+          node -p "'selenium-webdriver ' + require('selenium-webdriver/package.json').version"
+          npx playwright --version
+          npx cypress version
+          du -sh node_modules/selenium-webdriver node_modules/playwright-core node_modules/cypress ~/.cache/Cypress ~/.cache/ms-playwright 2>/dev/null || true
+
+      - name: Start MyPress on port 3100
+        run: |
+          PORT=3100 node src/main/app/server.js &
+          sleep 2
+          curl -s http://localhost:3100/api/health
+
+      - name: Selenium WebDriver + Mocha (3 runs)
+        run: |
+          for i in 1 2 3; do
+            s=$(date +%s%N); npm run --silent compare:selenium; e=$(date +%s%N)
+            echo "::notice title=Selenium run $i::$(( (e - s) / 1000000 )) ms"
+          done
+
+      - name: Playwright (3 runs)
+        run: |
+          for i in 1 2 3; do
+            s=$(date +%s%N); npm run --silent compare:playwright; e=$(date +%s%N)
+            echo "::notice title=Playwright run $i::$(( (e - s) / 1000000 )) ms"
+          done
+
+      - name: Cypress (3 runs)
+        run: |
+          for i in 1 2 3; do
+            s=$(date +%s%N); npm run --silent compare:cypress; e=$(date +%s%N)
+            echo "::notice title=Cypress run $i::$(( (e - s) / 1000000 )) ms"
+          done
+
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots/
