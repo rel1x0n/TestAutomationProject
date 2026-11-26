@@ -1,0 +1,4 @@
+username,password,expectedStatus
+testuser,password123,200
+testuser,wrong,401
+unknown,password123,401

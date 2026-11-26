@@ -1,0 +1,8 @@
+[
+  { "id": "TC01", "scenario": "Коректні дані", "name": "Ivan", "email": "ivan@example.com", "password": "123456", "expected": "success" },
+  { "id": "TC02", "scenario": "Некоректний email (без @)", "name": "Ivan", "email": "ivan.example.com", "password": "123456", "expected": "email" },
+  { "id": "TC03", "scenario": "Порожнє обов'язкове поле «Ім'я»", "name": "", "email": "ivan@example.com", "password": "123456", "expected": "name" },
+  { "id": "TC04", "scenario": "Пароль коротший за 6 символів", "name": "Ivan", "email": "ivan@example.com", "password": "12345", "expected": "password" },
+  { "id": "TC05", "scenario": "Email без домену верхнього рівня", "name": "Ivan", "email": "ivan@example", "password": "123456", "expected": "email" },
+  { "id": "TC06", "scenario": "Усі поля порожні", "name": "", "email": "", "password": "", "expected": "name,email,password" }
+]
